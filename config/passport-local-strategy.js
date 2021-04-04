@@ -30,7 +30,7 @@ passport.use(new LocalStrategy({
 
 // serializing the user to decide which key is to be kept in the cookies
 passport.serializeUser(function(user, done){
-    done(null, user.id);
+    done(null, user._id); //check
 });
 
 //deserializing the user from the key in the cookies
