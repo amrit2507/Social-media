@@ -1,17 +1,23 @@
 const User=require('../models/user')
-module.exports.action=function(req,res){
-    return res.render('users',{
+module.exports.profile=function(req,res){
+    return res.render('user_profile',{
         title : 'Codiel Users'
     });
 }
 
 module.exports.SignUp=function(req,res){
+    if(req.isAuthenticated()){
+        return res.redirect('/users/profile');
+    }
     return res.render('user_sign_up',{
         title : 'Codiel | Sign up'
     });
 }
 
 module.exports.SignIn=function(req,res){
+    if(req.isAuthenticated()){
+        return res.redirect('/users/profile');
+    }
     return res.render('user_sign_in',{
         title : 'Codiel | Sign in'
     });
@@ -41,5 +47,9 @@ module.exports.create=function(req,res){
 
 }
 module.exports.createSession=function(req,res){
-    
+    return res.redirect('/');
+}
+module.exports.destroySession=function(req,res){
+    req.logout();
+    return res.redirect('/');
 }
