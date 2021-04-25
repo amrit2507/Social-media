@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/css/forgot_password.css">
 <h1>Sign In</h1>
 
 <form action="/users/create-session" method="POST">
@@ -10,3 +11,13 @@
 <p>
     <a href="/users/auth/google">Google SignIn/SignUp</a>
 </p>
+
+<div id="box">
+    <span id="button">Forgot Password</span>
+    <form action="/users/forgot_password" id="form" method="POST">
+     <input type="email" placeholder="email" name="email" required>
+     <button type="submit">Sumbit</button>
+   </form>
+</div>
+
+<script src="/js/forgot_password.js"></script>
