@@ -1,6 +1,6 @@
-<link rel="stylesheet" href="/css/user_profile.css">
+<link rel="stylesheet" href="<%=assetPath('css/user_profile.css')%>">
 
-<img  alt="<%=user.name%>" width="100" src="<%=user.avatar%>" >
+<img  alt="<%=profile_user.name%>" width="100" src="<%=profile_user.avatar%>" >
 
 
 <% if(user.id==profile_user.id){ %>
@@ -20,4 +20,10 @@
         <p>
             <%= profile_user.email %>
         </p>
-    <%} %>
+        <% if(is_friends){%>
+            <a href="/users/remove_friend/<%=profile_user._id%>">Remove Friend</a>
+        <%}else{%>
+            <a href="/users/add_friend/<%=profile_user._id%>">Add Friend</a>
+        <%}%>
+        
+<%} %>

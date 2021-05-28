@@ -6,17 +6,30 @@ const queue=require('../config/kue');
 const forgetMailer = require('../mailer/forget_mailer');
 const path = require('path');
 const forgotPasswordWorker=require('../workers/forgot_password_worker');
+const Friendship=require('../models/friendship');
 
 // let's keep it same as before
-module.exports.profile = function (req, res) {
-    User.findById(req.params.id, function (err, user) {
-        return res.render('user_profile', {
-            title: 'User Profile',
-            profile_user: user
-        });
+module.exports.profile = async function (req, res){
+    let user=await User.findById(req.params.id);
+    let bothFriends=false;
+    let f1=await Friendship.findOne({
+        from_user:req.user._id,
+        to_user:user._id
     });
-
+    let f2=await Friendship.findOne({
+        to_user:req.user._id,
+        from_user:user._id
+    });
+    if(f1 || f2){
+        bothFriends=true;
+    }
+    return res.render('user_profile', {
+        title: 'User Profile',
+        profile_user: user,
+        is_friends:bothFriends
+    });
 }
+
 
 
 module.exports.update = async function (req, res) {
@@ -197,4 +210,55 @@ module.exports.changePassword = function (req, res) {
             }
         })
     }
+}
+module.exports.addFriend=async function(req,res){
+    try{
+        if (!req.isAuthenticated()) {
+            return res.redirect('back');
+        }
+        let user1=await User.findById(req.user._id);
+        let user2=await User.findById(req.params.id);
+        let friendship=await Friendship.create({
+            from_user:user1._id,
+            to_user:req.params.id
+        });
+        await user1.friendships.push(friendship._id);    
+        await user2.friendships.push(friendship._id);    
+        await user1.save();
+        await user2.save();
+        
+        return res.redirect('back');
+    }catch(err){
+        console.log('Error in adding friend',err);
+        return res.redirect('back');
+    }
+}
+module.exports.removeFriend=async function(req,res){
+    try{
+        if (!req.isAuthenticated()) {
+            return res.redirect('back');
+        }
+        let f1=await Friendship.findOne({
+            from_user:req.user._id,
+            to_user:req.params.id
+        });
+        let f2=await Friendship.findOne({
+            to_user:req.user._id ,
+            from_user: req.params.id 
+        });
+        if(f1){
+            await User.findByIdAndUpdate(req.user._id, { $pull: {friendships: f1._id}});
+            await User.findByIdAndUpdate(req.params.id, { $pull: {friendships: f1._id}});
+            f1.remove();
+        }else{
+            await User.findByIdAndUpdate(req.user._id, { $pull: {friendships: f2._id}});
+            await User.findByIdAndUpdate(req.params.id, { $pull: {friendships: f2._id}});
+            f2.remove();
+        }
+        return res.redirect('back');
+    }catch(err){
+        console.log('Error in removing friend',err);
+        return res.redirect('back');
+    }
+    
 }
