@@ -42,9 +42,5 @@
   },
   "devDependencies": {
     "gulp": "^4.0.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/amrit2507/Social-media"
   }
 }
