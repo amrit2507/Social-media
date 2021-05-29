@@ -26,7 +26,7 @@ class ChatEngine{
             });
 
             self.socket.on('user_joined', function(data){
-                console.log('a user joined!', data);
+                console.log('a user joined yes!', data);
             })
 
 
