@@ -5,7 +5,7 @@ class ChatEngine{
         this.userEmail = userEmail;
 
         
-        this.socket = io.connect('http://54.221.120.210:8000',{ transports : ['websocket'] });
+        this.socket = io.connect('http://54.221.120.210:5000',{ transports : ['websocket'] });
 
         if (this.userEmail){
             this.connectionHandler();
